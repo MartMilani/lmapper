@@ -9,3 +9,8 @@ del sys
 
 
 from lmapper._mapper import *
+
+from lmapper import filter
+from lmapper import cover
+from lmapper import cutoff
+from lmapper import cluster

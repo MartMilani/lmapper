@@ -318,7 +318,8 @@ class Complex():
                         self.add_simplex([node._id])
                         self._node_color.append(node._attribute)
                         self._node_size.append(node.size)
-        print("Successfully fittted the complex")
+        if verbose >= 1:
+            print("Successfully fittted the complex")
 
     def add_simplex(self, simplex):
         """This function sorts, creates all the lower dimensional simplices

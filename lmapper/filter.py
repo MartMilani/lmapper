@@ -90,7 +90,7 @@ class Projection(Filter):
     def __call__(self, data, verbose=1):
 
         if verbose >= 1:
-            print("Projecting data on component {}".format(self.ax))
+            print("\nProjecting data on component {}\n".format(self.ax))
 
         return np.array([row[self.ax] for row in data])
 

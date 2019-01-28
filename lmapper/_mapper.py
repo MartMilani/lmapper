@@ -3,17 +3,16 @@
 Mapper algorithm.
 
 Example:
-    >>> import lmapper as mp
-    >>> mapper = mp._lmapper.Mapper(data=x,
-    >>>                             filter='Projection',
-    >>>                             cluster='Linkage',
-    >>>                             cover='BalancedCover)
+    >>> import lmapper as lm
+    >>> mapper = lm.Mapper(data=x,
+    >>>                    filter='Projection',
+    >>>                    cluster='Linkage',
+    >>>                    cover='BalancedCover)
     >>> mapper.fit()
     >>> mapper.plot()
 
 The aim of this module is to provide an easy, well designed API for the client code
 to be easily readable and coherent with the pipeline of the Mapper algorithm.
-
 """
 
 
