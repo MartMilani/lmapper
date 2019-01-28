@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: lmapper
+Version: 0.1
+Summary: This is a Python implementation of the TDA Mapper algorithm for visualization of high-dimensional data
+Home-page: http://github.com/MartMilani/lmapper
+Author: Martino Milani
+Author-email: matrino.milani94@gmail.com
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
