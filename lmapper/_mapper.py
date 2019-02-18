@@ -31,11 +31,11 @@ class Mapper():
     """Class responsible for the implementation of the Mapper algorithm.
 
     Basic example:
-
-        >>> from filter import Projection
-        >>> from cover import UniformCover
-        >>> from cluster import Linkage
-        >>> from cutoff import FirstGap
+        >>> import lmapper as lm
+        >>> from lm.filter import Projection
+        >>> from lm.cover import UniformCover
+        >>> from lm.cluster import Linkage
+        >>> from lm.cutoff import FirstGap
         >>>
         >>>
         >>> filter = Projection(ax=0)
@@ -43,7 +43,7 @@ class Mapper():
         >>>                     overlap=0.4)
         >>> cluster = Linkage(method='single',
         >>>                   cutoff=FirstGap(0.05)
-        >>> mapper = sg.Mapper(data=x,
+        >>> mapper = lm.Mapper(data=x,
         >>>                    filter=filter,
         >>>                    cover=cover,
         >>>                    cluster=cluster)

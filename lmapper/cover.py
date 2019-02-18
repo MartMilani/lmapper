@@ -10,7 +10,6 @@ method of a Cluster object that is in charge of creating the Nodes inside each F
 
 Notes:
     check for existing iterators that could avoid defining the ListIterator class
-
 """
 
 import numpy as np
@@ -198,8 +197,8 @@ class OverlapCover(Cover):
 
 
 class UniformCover(OverlapCover):
-    """Implementation of a balanced cover. A balanced cover is made by equally spaced,
-    overlapping intervals.
+    """Implementation of a Uniform cover. A Uniform cover is made by
+    overlapping intervals of equal length.
 
     Notes:
         So far the implementation is only for scalar filters. To be extended with
@@ -374,7 +373,7 @@ class Fiber():
         _filter_maxima (int): maximum value of the filter values of one Fiber
         _pointlabels (np.ndarray): one dimensional nparray, holding the indices
             of the points of the Fiber. These indices can be used in the original
-            data attribute of the ShapeGraph object to retrieve the points of the Fiber.
+            data attribute of the Mapper object to retrieve the points of the Fiber.
         _points (np.ndarray): two-dimensional copy of the data points of the Fiber
         _filtervalues (np.ndarray): one dimensional filter values of the points
         _clusterinfo (ClusterInfo): struct containing info on the clustering algorithm

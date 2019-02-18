@@ -95,6 +95,8 @@ class Projection(Filter):
         return np.array([row[self.ax] for row in data])
 
     def for_assignment_only(self, x, data):
+        """Method used by the companion package PredMap
+        """
         return x[self.ax]
 
 
@@ -144,7 +146,8 @@ class Eccentricity(Filter):
         return ecc
 
     def for_assignment_only(self, x, data):
-        """Serial, Python version of eccentricity() used for the assignment
+        """Method used by the companion package PredMap.
+        Serial (x has to be a one dimensional np.ndarray representing a single datapoint)
 
         TODO:
             refactor the code for prediction in order to vectorize it

@@ -108,7 +108,7 @@ class Complex():
             that just stores a copy of the Node._attribute ordered by Node._ids
         _node_size (list): list of floats that is created by the fit() method,
             that just stores the number of datapoints per node ordered by Node._ids
-        _intersection_dict (dict): {(u, v, ...): [13, 15, 16, ...]} where (u, v, ...) is a tuple
+        _intersection_dict (dict): { (u, v, ...): [13, 15, 16, ...] } where (u, v, ...) is a tuple
             of node ids identifying a simplex and the value is a list of point labels
             belonging to the intersection common to the whole simplex
         _weights (dict): {(u, v, ...): 15} where (u, v, ...) is a tuple
