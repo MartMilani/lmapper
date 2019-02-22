@@ -6,12 +6,12 @@ which every new filter that will be implemented has to inherit from.
 import sys
 import numpy as np
 from scipy.spatial.distance import cdist
-sys.path.append('/Users/martinomilani/Documents/III_semester/PACS/CPythonExtension/filter')
+sys.path.append('/Users/martinomilani/Documents/lmapper/cpp/filterutils')
 try:
-    from mycode import eccentricity
+    from filterutils import eccentricity
 except ImportError:
-    sys.stderr.write('Warning: Could not load the module '
-                     '“fastfilter”.\nThe Python implementation of the eccentricity is '
+    sys.stderr.write('Warning: Could not load the C++ module '
+                     '“filterutils”.\nThe Python implementation of the eccentricity is '
                      'used instead, but it will be slower.\n')
 
     def eccentricity(dm, ecc, exp, nthread):
@@ -36,7 +36,7 @@ except ImportError:
             ecc[:] = np.power(dsum/float(N), 1./exp)
 
 try:
-    from mycode import my_distance
+    from filterutils import my_distance
 except ImportError:
     sys.stderr.write('Warning: Could not load the module '
                      '“fastdistance”.\nThe scipy.distance.cdist implementation is '
@@ -52,7 +52,7 @@ class Filter():
 
     """
 
-    def __call__(self, x, verbose=1):
+    def __call__(self, x):
         """
         Args:
             x (np.ndarray): has to be a two-dimensional np.ndarray
@@ -87,10 +87,7 @@ class Projection(Filter):
     def __init__(self, ax=0):
         self.ax = ax
 
-    def __call__(self, data, verbose=1):
-
-        if verbose >= 1:
-            print("\nProjecting data on component {}\n".format(self.ax))
+    def __call__(self, data):
 
         return np.array([row[self.ax] for row in data])
 
@@ -108,7 +105,7 @@ class Eccentricity(Filter):
         self.exponent = exponent
         self.metric = metric
 
-    def __call__(self, data, verbose, nthread=4):
+    def __call__(self, data, nthread=4):
         """Just a wrapper of a call to my_distance and a call to eccentricity().
         """
         # defining the parameters
@@ -118,23 +115,11 @@ class Eccentricity(Filter):
         ecc = np.zeros(N, dtype='double')
         dm = np.zeros((N, N), dtype='double')
 
-        if verbose >= 1:
-            print("computing distance matrix of {} points".format(N))
-
         # computing the distance matrix
         try:
             my_distance(data_, dm, nthread, self.metric)
         except NameError:
-
-            if verbose >= 1:
-                print("The parallel implementation of the cdist function can not"
-                      "be used. I'll use the serial implementation instead, but"
-                      "it will be slower.")
-
             dm = cdist(data_, data_, metric=self.metric)
-
-        if verbose >= 1:
-            print("computing eccentricity...")
 
         # computing eccentricity
         if self.exponent in (np.inf, 'Inf', 'inf'):

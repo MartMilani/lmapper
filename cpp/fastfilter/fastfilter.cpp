@@ -7,7 +7,7 @@
 namespace py = pybind11;
 
 class Filter{
-    //Abstract base class from which all filters have to inherit to obey the API.
+    // Abstract base class from which all filters have to inherit to obey the API.
     // Furthermore, it implements a simple static method as factory, in order to be easily
     // ported to Python
     public:
@@ -20,7 +20,7 @@ class Filter{
 };
 
 class PyFilter : public Filter {
-    // Filter is not constructible, and we clearly require some kind of “trampoline”
+    // Filter is not constructible, and we clearly (?) require some kind of “trampoline”
     // that redirects virtual calls back to Python, as explained in more details in
     // https://pybind11.readthedocs.io/en/stable/advanced/classes.html
 public:
@@ -74,7 +74,7 @@ py::array_t<double> Projection::operator() (py::array_t<double>& data){
         int ndim;
         std::vector<size_t> shape;
         std::vector<size_t> strides;
-    }; /**/
+    }; */
     py::array_t<double> filter_values(data_info.shape[0]);
     py::buffer_info filter_info = filter_values.request();
     auto data_ptr = static_cast<double *>(data_info.ptr);
@@ -129,10 +129,13 @@ py::array_t<double> Eccentricity::operator()(py::array_t<double>& data){
 py::array_t<double> Eccentricity::my_distance(py::array_t<double>& data) const{
     // Note:
     //      Beware: this method runs without holding the GIL
+    std::cerr<<"yo"<<std::endl;
     py::buffer_info data_info = data.request();
+    std::cerr<<"yo"<<std::endl;
     // allocating result
     int n = data_info.shape[0];
     py::array_t<double> dm({n,n});
+    std::cerr<<"yo"<<std::endl;
     py::buffer_info dm_info = dm.request();
     auto data_ptr = static_cast<double *>(data_info.ptr);
     auto dm_ptr = static_cast<double *>(dm_info.ptr);
@@ -144,6 +147,7 @@ py::array_t<double> Eccentricity::my_distance(py::array_t<double>& data) const{
     std::vector<double> std_dev;
 
     omp_set_num_threads(nthreads);
+    std::cerr<<"yo"<<std::endl;
     if (metric == "correlation"){
         // ---- calculating std_dev and data_normalized ----
         data_normalized.reserve(N*PAD);
@@ -176,6 +180,7 @@ py::array_t<double> Eccentricity::my_distance(py::array_t<double>& data) const{
         }
         }
     }
+    std::cerr<<"yo"<<std::endl;
     #pragma omp parallel
     {
     // splitting the work between threads
@@ -189,6 +194,7 @@ py::array_t<double> Eccentricity::my_distance(py::array_t<double>& data) const{
         end = N;
 
     // here the computations come
+    std::cerr<<"yo"<<std::endl;
     double sum = 0;
     if (metric == "euclidean"){
         for (int i = start; i < end; i++){
@@ -287,7 +293,7 @@ std::unique_ptr<Filter> Filter::factory(std::string filter_name)
         return std::unique_ptr<Filter>(new Eccentricity(1, 1, "euclidean"));
 
     std::cout<<"Wrong filter specifications: creating a Projection filter"<<std::endl;
-    return std::unique_ptr<Filter>(new Projection(0,1));
+    return std::unique_ptr<Filter>(new Projection(0, 1));
 }
 
 

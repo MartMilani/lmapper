@@ -61,8 +61,8 @@ class Mapper():
             in the cover
         complex (Complex): to be used only after having called the fit() method
         _nodes (dict): created by the fit() method
-        _fit_flag (int): assumes values in {0, 1, 2, 3, 4} and kepps track of the last
-            pipeline step that was performed in case of callinf the method fit()
+        _fit_flag (int): assumes values in {0, 1, 2, 3, 4} and keeps track of the last
+            pipeline step that was performed in case of calling the method fit()
             after a change of parameters through the method set_params()
     """
 
@@ -90,20 +90,37 @@ class Mapper():
                 string that must match exactly one of the classes defined in the module
                 cluster.py
         """
+        # DEPRECATION WARNING: the possibility of passing a np.ndarray to the filter attribute
+        # will be deprecated in the future version
 
-        # base objects needed for the algorithm
-        assert isinstance(filter, (str, Filter, np.ndarray)), 'Wrong filter format'
+        # fit_flag could be initialized at 0 or 1 in lines 102-106-111,
+        # since the filter attribute could be a numpyarray containing
+        # user-defined filter values
+        self._fit_flag = None
+
+        # DEPRECATION WARNING: the possibility of passing a np.ndarray to the filter attribute
+        # will be deprecated in the future version
+        assert isinstance(filter, (str, Filter, np.ndarray)) or callable(filter), 'Wrong filter format'
         if isinstance(filter, str):
             assert filter in _all_filters_
             self.filter = Filter.factory(filter)
             self.filter_values = None
+            self._fit_flag = 0
         elif isinstance(filter, Filter):
             self.filter = filter
             self.filter_values = None
-        else:
-            assert(filter.alen() == data.alen())
+            self._fit_flag = 0
+        # DEPRECATION WARNING: the possibility of passing a np.ndarray to the filter attribute
+        # will be deprecated in the future version
+        elif isinstance(filter, np.ndarray):
+            assert(np.alen(filter) == np.alen(self.data))
             self.filter_values = filter
             self.filter = None
+            self._fit_flag = 1
+        elif callable(filter):
+            self.filter = filter
+            self.filter_values = None
+            self._fit_flag = 0
 
         assert isinstance(cover, (str, Cover)), 'Wrong cover format'
         if isinstance(cover, str):
@@ -121,7 +138,6 @@ class Mapper():
 
         self.data = data
         self.complex = Complex()
-        self._fit_flag = 0
         self._nodes = {}
 
     def set_params(self, **kwargs):
@@ -153,14 +169,30 @@ class Mapper():
             self.data = data
             self._fit_flag = min([self._fit_flag, 0])
 
-        if filter:
-            assert isinstance(filter, (str, Filter)), 'Wrong filter format'
+        if filter is not None:
+            # DEPRECATION WARNING: the possibility of passing a np.ndarray to the filter attribute
+            # will be deprecated in the future version
+            assert isinstance(filter, (str, Filter, np.ndarray)) or callable(filter), 'Wrong filter format'
             if isinstance(filter, str):
                 assert filter in _all_filters_
                 self.filter = Filter.factory(filter)
-            else:
+                self.filter_values = None
+                self._fit_flag = min([self._fit_flag, 0])
+            elif isinstance(filter, Filter):
                 self.filter = filter
-            self._fit_flag = min([self._fit_flag, 0])
+                self.filter_values = None
+                self._fit_flag = min([self._fit_flag, 0])
+            # DEPRECATION WARNING: the possibility of passing a np.ndarray to the filter attribute
+            # will be deprecated in the future version
+            elif isinstance(filter, np.ndarray):
+                assert(np.alen(filter) == np.alen(self.data))
+                self.filter_values = filter
+                self.filter = None
+                self._fit_flag = min([self._fit_flag, 1])
+            elif callable(filter):
+                self.filter = filter
+                self.filter_values = None
+                self._fit_flag = 0
 
         if cover:
             assert isinstance(cover, (str, Cover)), 'Wrong cover format'
@@ -204,7 +236,14 @@ class Mapper():
         if self._fit_flag == 0:
 
             # compute filter values
-            self.filter_values = self.filter(self.data, verbose)
+            if verbose:
+                print("Computing filter values...")
+
+            self.filter_values = self.filter(self.data)
+
+            if verbose:
+                print("Max filter value: {}".format(np.max(self.filter_values)))
+                print("Mix filter value: {}".format(np.min(self.filter_values)))
 
             # updating the _fit_flag signaling that this step was done successfully
             self._fit_flag = 1
@@ -257,7 +296,7 @@ class Mapper():
         # TODO: test what happens if set_params() is called twice in a row?
         assert self._fit_flag == 4, ("Something went wrong in fitting the complex. "
                                      "_fit_flag should be equal to 4 at the end of "
-                                     "this function")
+                                     "this method")
         return self
 
     def plot(self, node_labels=False, edge_labels=False, node_color=None, pos=None):

@@ -76,7 +76,9 @@ class Cover(object):
 
     @staticmethod
     def factory(covertype):
-        assert covertype in [cover.__name__ for cover in Cover.__subclasses__()]
+        # TODO: next line has to be modified as soon as new covers will be implemented
+        # in order to include all covers, that could not derive from OverlapCover
+        assert covertype in [cover.__name__ for cover in OverlapCover.__subclasses__()]
         return globals()[covertype]()
         assert 0, "Bad cover creation: " + covertype
 
@@ -395,7 +397,7 @@ class Fiber():
         return ListIterator(self._nodes)
 
 
-_all_covers_ = [c.__name__ for c in Cover.__subclasses__()]
+_all_covers_ = [c.__name__ for c in OverlapCover.__subclasses__()]
 
 
 if __name__ == '__main__':
