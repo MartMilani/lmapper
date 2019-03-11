@@ -22,6 +22,7 @@ setup(name='lmapper',
         'sklearn',
         'networkx',
         'matplotlib',
+        'pybind11'
       ],
       include_package_data=True,
       zip_safe=False,

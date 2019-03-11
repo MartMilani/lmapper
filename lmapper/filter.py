@@ -6,7 +6,14 @@ which every new filter that will be implemented has to inherit from.
 import sys
 import numpy as np
 from scipy.spatial.distance import cdist
-sys.path.append('/Users/martinomilani/Documents/lmapper/cpp/filterutils')
+
+# --------------------------------------------
+# trying to import the filterutils module.
+# in case of failure, define the corresponding
+# functions in Python
+# --------------------------------------------
+import os
+sys.path.append(os.path.abspath('../cpp/filterutils'))
 try:
     from filterutils import eccentricity
 except ImportError:
@@ -39,7 +46,7 @@ try:
     from filterutils import my_distance
 except ImportError:
     sys.stderr.write('Warning: Could not load the module '
-                     '“fastdistance”.\nThe scipy.distance.cdist implementation is '
+                     '“filterutils”.\nThe scipy.distance.cdist implementation is '
                      'used instead.\n')
 
 
@@ -135,7 +142,8 @@ class Eccentricity(Filter):
         Serial (x has to be a one dimensional np.ndarray representing a single datapoint)
 
         TODO:
-            refactor the code for prediction in order to vectorize it
+            refactor the code for prediction in order to vectorize it. Or maybe
+            delegate this method to the predmap package.
         """
         N = np.alen(data)
         x = x.reshape((1, len(x)))
@@ -152,46 +160,3 @@ class Eccentricity(Filter):
 
 
 _all_filters_ = [f.__name__ for f in Filter.__subclasses__()]
-
-
-if __name__ == '__main__':
-    def test():
-        """Test routine for the filter module
-
-        Returns:
-            (int):
-
-        Raises:
-            AssertionError: if the filter does not behave as predicted
-        """
-
-        import pickle
-        x = pickle.load(open('/Users/martinomilani/Documents/III_semester/PACS/shapegraph/data.pickle', 'rb'))
-        f = Filter.factory('Projection')
-        filter_values = f(x)
-        assert (filter_values == np.array([row[0] for row in x])).all()
-        print('OK')
-
-        def eq(a, b):
-            for aa, bb in zip(a, b):
-                if not np.asarray([x < y+1e-12 and x > y-1e-12 for x, y in zip(aa, bb)]).all():
-                        return 0
-            return 1
-
-        from numpy import genfromtxt
-        x = genfromtxt('/Users/martinomilani/Documents/III_semester/PACS/project/synthetic_dataset/synthetic.csv',
-                       delimiter=',')
-        x = x[1:]  # eliminating the first row of nans
-        x = np.asarray([row[0:3] for row in x])
-        x = x[0:1000]
-        N = np.alen(x)
-        dm = np.zeros((N, N), dtype='double')
-        my_distance(x, dm, 4, 'euclidean')
-        dm_check = cdist(x, x, 'euclidean')
-        assert eq(dm, dm_check)
-        dm = np.zeros((N, N), dtype='double')
-        my_distance(x, dm, 4, 'correlation')
-        dm_check = cdist(x, x, 'correlation')
-        assert eq(dm, dm_check)
-        return 0
-    test()

@@ -82,7 +82,6 @@ class Cover(object):
         return globals()[covertype]()
         assert 0, "Bad cover creation: " + covertype
 
-    @staticmethod
     def find_intersecting_dict(list_of_as, list_of_bs):
         """
         Args:
@@ -189,7 +188,7 @@ class OverlapCover(Cover):
             f = Fiber(corresponding_pointlabels, a, b, i, corresponding_filtervalues, points)
             fibers.append(f)
             # updating the intersecting dictionary
-            intersecting_dict = Cover.find_intersecting_dict(list_of_as, list_of_bs)
+            intersecting_dict = self.find_intersecting_dict(list_of_as, list_of_bs)
 
             if verbose >= 1:
                 print("Interval {0:3d}/{1:3d}, I = ({2:0.3f}, {3:0.3f}), found {4:5d} points".format(
@@ -312,7 +311,7 @@ class BalancedCover(OverlapCover):
             self._fibers.append(f)
 
             # updating the intersecting dictionary
-            self.intersecting_dict = Cover.find_intersecting_dict(list_of_as, list_of_bs)
+            self.intersecting_dict = self.find_intersecting_dict(list_of_as, list_of_bs)
 
             if verbose >= 1:
                 print("Interval {0:3d}/{1:3d}, I = ({2:0.3f}, {3:0.3f}), found {4:2d} points".format(
