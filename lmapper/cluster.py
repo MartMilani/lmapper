@@ -12,6 +12,10 @@ class Cluster():
     """
 
     def __call__(self, fiber, verbose):
+        """This method must instantiate the complex.Node objects corresponding
+        to the clusters found in the cover.Fiber object and store them in the
+        cover.Fiber._nodes attribute as a Python list
+        """
         raise NotImplementedError()
 
     def get_params(self):

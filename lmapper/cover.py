@@ -82,7 +82,7 @@ class Cover(object):
         return globals()[covertype]()
         assert 0, "Bad cover creation: " + covertype
 
-    def find_intersecting_dict(list_of_as, list_of_bs):
+    def find_intersecting_dict(self, list_of_as, list_of_bs):
         """
         Args:
             list_of_as (list): list of the lower bounds of each interval
@@ -366,7 +366,7 @@ class KeplerCover(OverlapCover):
 
 
 class Fiber():
-    """data structure for a Fiber
+    """Iterable data structure for a Fiber
 
     Attributes:
         _fiber_index (int): unique identifier of a Fiber
@@ -379,7 +379,8 @@ class Fiber():
         _filtervalues (np.ndarray): one dimensional filter values of the points
         _clusterinfo (ClusterInfo): struct containing info on the clustering algorithm
             It's created by applying a Cluster call on the fiber.
-        _nodes (list): list of Nodes. It's created by applying a Cluster call on the fiber.
+        _nodes (list): list of Nodes. It's created by applying a Cluster __call__ on
+            the fiber object.
     """
 
     def __init__(self, point_labels, a, b, i, filtervalues, points):

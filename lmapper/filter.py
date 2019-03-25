@@ -6,14 +6,13 @@ which every new filter that will be implemented has to inherit from.
 import sys
 import numpy as np
 from scipy.spatial.distance import cdist
-
 # --------------------------------------------
 # trying to import the filterutils module.
 # in case of failure, define the corresponding
 # functions in Python
 # --------------------------------------------
-import os
-sys.path.append(os.path.abspath('../cpp/filterutils'))
+sys.path.append(__file__[:-10]+'/cpp/filterutils')
+print(__file__[:-10]+'/cpp/filterutils')
 try:
     from filterutils import eccentricity
 except ImportError:

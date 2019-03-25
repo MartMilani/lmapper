@@ -1,5 +1,9 @@
-from setuptools import setup
+from distutils.core import setup, Extension
+import os
 
+
+os.environ["CXX"] = "clang++"
+os.environ["CC"] = "clang++"
 
 def readme():
     with open('README.rst') as f:
@@ -27,4 +31,6 @@ setup(name='lmapper',
       include_package_data=True,
       zip_safe=False,
       test_suite='nose.collector',
-      tests_require=['nose'])
+      tests_require=['nose'],
+      ext_modules=[Extension('filterutils', ['cpp/filterutils/filterutils.cpp'],
+                             extra_compile_args=["-O3 -Wall -shared -std=c++11  -I/Users/Mart/anaconda3/envs/pdm/include -mmacosx-version-min=10.9 -m64 -fPIC -Ipybind11/include -I/Users/Mart/anaconda3/envs/pdm/include/python3.7m -undefined dynamic_lookup -Xpreprocessor -fopenmp -lomp `python3 -m pybind11 --includes`"])])
