@@ -5,10 +5,24 @@ import os
 os.environ["CXX"] = "clang++"
 os.environ["CC"] = "clang++"
 
+
 def readme():
     with open('README.rst') as f:
         return f.read()
 
+
+compiler_args = ['-std=c++11',
+                 '-stdlib=libc++',
+                 '-mmacosx-version-min=10.7',
+                 '-m64',
+                 '-fPIC',
+                 '-Xpreprocessor',
+                 '-fopenmp'
+                 ]
+
+linker_args = ['-Xpreprocessor',
+               '-fopenmp',
+               '-lomp']
 
 setup(name='lmapper',
       version='0.1',
@@ -17,7 +31,7 @@ setup(name='lmapper',
       long_description='',
       url='http://github.com/MartMilani/lmapper',
       author='Martino Milani',
-      author_email='matrino.milani94@gmail.com',
+      author_email='martino.milani94@gmail.com',
       license='MIT',
       packages=['lmapper'],
       install_requires=[
@@ -33,4 +47,8 @@ setup(name='lmapper',
       test_suite='nose.collector',
       tests_require=['nose'],
       ext_modules=[Extension('filterutils', ['cpp/filterutils/filterutils.cpp'],
-                             extra_compile_args=["-O3 -Wall -shared -std=c++11  -I/Users/Mart/anaconda3/envs/pdm/include -mmacosx-version-min=10.9 -m64 -fPIC -Ipybind11/include -I/Users/Mart/anaconda3/envs/pdm/include/python3.7m -undefined dynamic_lookup -Xpreprocessor -fopenmp -lomp `python3 -m pybind11 --includes`"])])
+                             include_dirs=['pybind11/include'],
+                             language='c++11',
+                             extra_compile_args=compiler_args,
+                             extra_link_args=linker_args
+                             )])
