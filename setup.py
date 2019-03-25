@@ -51,4 +51,6 @@ setup(name='lmapper',
                              language='c++11',
                              extra_compile_args=compiler_args,
                              extra_link_args=linker_args
-                             )])
+                             )],
+      package_dir={'lmapper': 'lmapper'},
+      package_data={'lmapper': ['datasets/*.csv', 'test/*.py', 'example/*.py']})

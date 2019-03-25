@@ -1,9 +1,8 @@
-import sys
-sys.path.append('/Users/martinomilani/Documents/III_semester/PACS/CPythonExtension/filter')
-from mycode import my_distance
+from filterutils import my_distance
 import numpy as np
 from scipy.spatial.distance import cdist
 import pandas as pd
+
 
 if __name__ == '__main__':
     data = pd.read_csv('/Users/martinomilani/Documents/III_semester/PACS/project/wisconsinBreastCancer/data.csv')
@@ -23,26 +22,3 @@ if __name__ == '__main__':
     my_distance(new_data, my_dm, 4, "euclidean")
     print(dm)
     print(my_dm)
-
-
-
-
-    """
-    dm.shape
-    ecc = np.zeros(np.alen(dm)).astype('double')
-    ecc.shape
-    code.eccentricity(dm, ecc, -1, 4)
-    print(-1, ecc[0:10])
-    code.eccentricity(my_dm, ecc, -1, 4)
-    print(-1, ecc[0:10])
-    code.eccentricity(dm, ecc, 1, 4)
-    print(1, ecc[0:10])
-    code.eccentricity(my_dm, ecc, 1, 4)
-    print(1, ecc[0:10])
-    code.eccentricity(dm, ecc, 2, 4)
-    print(2, ecc[0:10])
-    code.eccentricity(my_dm, ecc, 2, 4)
-    print(2, ecc[0:10])
-    dm.max()
-    ecc.max()
-    """
