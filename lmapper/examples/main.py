@@ -4,15 +4,12 @@ m.milani@l2f.ch
 Test routine for the mapper module
 """
 import numpy as np
-import sys
-sys.path.append('/Users/martinomilani/Documents/III_semester/PACS/project/pymapper')
-sys.path.append('/Users/martinomilani/Documents/III_semester/PACS/project/predictive_mapper')
-import lmapper as mp
-from filter import Eccentricity, Projection
-from cover import UniformCover, BalancedCover
-from cluster import Linkage
-import mapperpredictor as mapp
-from cutoff import FirstGap
+import lmapper as lm
+from lmapper.filter import Eccentricity
+from lmapper.cover import BalancedCover
+from lmapper.cluster import Linkage
+import predmap as mapp
+from lmapper.cutoff import FirstGap
 
 
 def test(xs, y):
@@ -30,7 +27,7 @@ def test(xs, y):
     cluster = Linkage(method='average',
                       metric='correlation',
                       cutoff=FirstGap(0.01))
-    mapper = mp.Mapper(data=x,
+    mapper = lm.Mapper(data=x,
                        filter=filter,
                        cover=cover,
                        cluster=cluster)
@@ -51,7 +48,7 @@ def test(xs, y):
 def main():
     import numpy as np
     import pandas as pd
-    data = pd.read_csv('/Users/martinomilani/Documents/III_semester/PACS/project/wisconsinBreastCancer/data.csv')
+    data = pd.read_csv('../datasets/data.csv')
     x = data[data.columns[2:-1]].values
     y = data[data.columns[1]].values
     y_ = np.asarray([0 if x == 'M' else 1 for x in y])

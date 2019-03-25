@@ -53,4 +53,7 @@ setup(name='lmapper',
                              extra_link_args=linker_args
                              )],
       package_dir={'lmapper': 'lmapper'},
-      package_data={'lmapper': ['datasets/*.csv', 'test/*.py', 'example/*.py']})
+      package_data={'lmapper': ['datasets/*.csv',
+                                'datasets/*.csv.gz',
+                                'test/*.py',
+                                'examples/*.py']})

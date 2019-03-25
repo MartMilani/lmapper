@@ -11,10 +11,6 @@ from lmapper.cover import KeplerCover
 from lmapper.cluster import Linkage
 from lmapper.cutoff import FirstGap
 
-"""import sys
-sys.path.append('/Users/martinomilani/Documents/lmapper/cpp')
-from fastfilter import Eccentricity"""
-
 
 def test1(x):
     """Basic usage"""
@@ -83,7 +79,7 @@ def test2(mapper):
 def main():
     import gzip
     import numpy as np
-    filename = '/Users/martinomilani/Documents/III_semester/PACS/mapper/exampleshapes/cat-reference.csv.gz'
+    filename = '../datasets/cat-reference.csv.gz'
     with gzip.open(filename, 'r') as inputfile:
         x = np.loadtxt(inputfile, delimiter=',', dtype=np.float)
     print(x.shape)
