@@ -5,22 +5,7 @@
 #include <iostream>
 #include <algorithm>
 namespace py = pybind11;
-/*
-N = np.alen(data)
-ecc = np.empty(N)
-if self.exponent in (np.inf, 'Inf', 'inf'):
-    for i in range(N):
-        ecc[i] = cdist(data[(i,), :], data, **self.metricpar).max()
-elif self.exponent == 1.:
-    for i in range(N):
-        ecc[i] = cdist(data[(i,), :], data, **self.metricpar).sum()/float(N)
-else:
-    for i in range(N):
-        dsum = np.power(cdist(data[(i,), :], data, **self.metricpar),
-                        self.exponent).sum()
-        ecc[i] = np.power(dsum/float(N), 1./self.exponent)
-return ecc
-*/
+
 // Passing in an array of doubles
 
 void my_distance(py::array_t<double> data, py::array_t<double> dm, int nthreads, std::string metric){
@@ -28,7 +13,8 @@ void my_distance(py::array_t<double> data, py::array_t<double> dm, int nthreads,
 
     py::buffer_info data_info = data.request();
     py::buffer_info dm_info = dm.request();
-    /*
+    /* here we remind the structure of a buffer_info struct:
+
     struct buffer_info {
         void *ptr;
         size_t itemsize;
@@ -37,35 +23,46 @@ void my_distance(py::array_t<double> data, py::array_t<double> dm, int nthreads,
         std::vector<size_t> shape;
         std::vector<size_t> strides;
     }; */
+
+    // data_ptr and dm_ptr are pointers to double to the array where
+    // the data of the corresponding numpy array is stored
     auto data_ptr = static_cast<double *>(data_info.ptr);
     auto dm_ptr = static_cast<double *>(dm_info.ptr);
 
+    // storing the dimensions of the arrays
     const int N = data_info.shape[0];
     const int PAD = data_info.shape[1];
 
+    // initializing the data structures we need in case the
+    // correlation distance is used
     std::vector<double> data_normalized;
     std::vector<double> std_dev;
 
+    // setting the number of threads
     omp_set_num_threads(nthreads);
+
     if (metric == "correlation"){
         //
         // ---- calculating std_dev and data_normalized ----
         //
+
+        // reserving the correct amount of memory
         data_normalized.reserve(N*PAD);
         std_dev.reserve(N);
 
         #pragma omp parallel
         {
+        // these 8 lines split the job between threads
         const int whoami = omp_get_thread_num();
         const int stride = N/nthreads;
         const int start = stride*whoami;
-
         int end = 0;
         if (whoami!= omp_get_num_threads()-1)
             end = start + stride;
         else
             end = N;
 
+        // here the data_normalized and the std_dev arrays are computed
         double mean = 0.0;
         for (int i = start; i < end; i++){
             std_dev[i] = 0.0;
@@ -83,10 +80,10 @@ void my_distance(py::array_t<double> data, py::array_t<double> dm, int nthreads,
     }
     #pragma omp parallel
     {
+    // these 8 lines split the job between threads
     const int whoami = omp_get_thread_num();
     const int stride = N/nthreads;
     const int start = stride*whoami;
-
     int end = 0;
     if (whoami!= omp_get_num_threads()-1)
         end = start + stride;
@@ -95,6 +92,7 @@ void my_distance(py::array_t<double> data, py::array_t<double> dm, int nthreads,
 
     double sum = 0;
 
+    // here we compute the distance matrix
     if (metric == "euclidean"){
         for (int i = start; i < end; i++){
             for (int j = i+1; j < N; j++){
@@ -125,15 +123,7 @@ void eccentricity(py::array_t<double> dm, py::array_t<double> ecc, int exponent,
 
     py::buffer_info dm_info = dm.request();
     py::buffer_info ecc_info = ecc.request();
-    /*
-    struct buffer_info {
-        void *ptr;
-        size_t itemsize;
-        std::string format;
-        int ndim;
-        std::vector<size_t> shape;
-        std::vector<size_t> strides;
-    }; */
+
     auto dm_ptr = static_cast<double *>(dm_info.ptr);
     auto ecc_ptr = static_cast<double *>(ecc_info.ptr);
 
@@ -142,15 +132,18 @@ void eccentricity(py::array_t<double> dm, py::array_t<double> ecc, int exponent,
 
     #pragma omp parallel
     {
+    // these 8 lines spit the job between threads
+    int whoami = omp_get_thread_num();
+    int stride = N/nthreads;
+    int start = stride*whoami;
+    int end = 0;
+    if (whoami!= omp_get_num_threads()-1)
+        end = start + stride;
+    else
+        end = N;
+
+    // implementation of the eccentricity in case exponent==-1
     if (exponent == -1){
-        int whoami = omp_get_thread_num();
-        int stride = N/nthreads;
-        int start = stride*whoami;
-        int end = 0;
-        if (whoami!= omp_get_num_threads()-1)
-            end = start + stride;
-        else
-            end = N;
         for (int i = start; i <end; i++)
             for (int j = 0; j<N; j++){
                 double el = dm_ptr[i*N+j];
@@ -158,16 +151,8 @@ void eccentricity(py::array_t<double> dm, py::array_t<double> ecc, int exponent,
                     ecc_ptr[i] = el;
             }
     }
+    // implementation of the eccentricity in case exponent==1
     else if (exponent == 1){
-        int whoami = omp_get_thread_num();
-        int stride = N/nthreads;
-        int start = stride*whoami;
-        int end = 0;
-        if (whoami!= omp_get_num_threads()-1)
-            end = start + stride;
-        else
-            end = N;
-
         double sum = 0;
         for (int i = start; i <end; i++){
             sum = 0;
@@ -176,16 +161,8 @@ void eccentricity(py::array_t<double> dm, py::array_t<double> ecc, int exponent,
             ecc_ptr[i] = sum/N;
         }
     }
+    // implementation of the eccentricity in case exponent!=1
     else{
-        int whoami = omp_get_thread_num();
-        int stride = N/nthreads;
-        int start = stride*whoami;
-        int end = 0;
-        if (whoami!= omp_get_num_threads()-1)
-            end = start + stride;
-        else
-            end = N;
-
         double sum = 0;
         for (int i = start; i <end; i++){
             sum = 0;
@@ -197,15 +174,21 @@ void eccentricity(py::array_t<double> dm, py::array_t<double> ecc, int exponent,
     }
 }
 
+
+// binding code
 PYBIND11_MODULE(filterutils, m) {
     m.doc() = "auto-compiled c++ extension";
     m.def("eccentricity", [](py::array_t<double> dm, py::array_t<double> ecc, int exponent, int nthreads) {
-        /* Release GIL before calling into C++ code */
+        /* Release GIL before calling into C++ code, since we are not creating or destroying
+        any Python object we won't mess up with the reference count and thus we are safe from
+        data races */
         py::gil_scoped_release release;
         return eccentricity(dm, ecc, exponent, nthreads);
     });
     m.def("my_distance", [](py::array_t<double> data, py::array_t<double> dm, int nthreads, std::string metric) {
-        /* Release GIL before calling into C++ code */
+        /* Release GIL before calling into C++ code, since we are not creating or destroying
+        any Python object we won't mess up with the reference count and thus we are safe from
+        data races */
         py::gil_scoped_release release;
         return my_distance(data, dm, nthreads, metric);
       });
