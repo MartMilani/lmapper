@@ -46,35 +46,33 @@ def test1(x):
     mapper.fit()
     mapper.plot()
 
+    """change of clustering algorithm"""
     cluster = Linkage(method='single',
                       metric='euclidean',
-                      cutoff=FirstGap(0.1))
+                      cutoff=FirstGap(0.2))
     mapper.set_params(cluster=cluster)
     mapper.fit()
 
+    """change of filter using a string argument"""
     mapper.set_params(filter='Projection')
     mapper.fit()
 
+    """change of all parameters using a string argument"""
     mapper.set_params(filter='Projection',
                       cover='UniformCover',
                       cluster='Linkage')
     mapper.fit()
-
-    mapper.set_params(filter='Projection')
-    mapper.fit()
-
     return mapper
 
 
 def test2(mapper):
-    """Personalize filter values"""
-
+    """Personalize filter values directly with a numpy.ndarray"""
     # passing personalized filter values
     values = np.random.rand(mapper.data.shape[0])
     mapper.set_params(filter=values)
     mapper.fit()
 
-    # passing a callback
+    """passing a personalized filter function"""
     def ProjectionOnFirstAxis(data, verbose=True):
         if verbose:
             print("Projecting data on first axis")

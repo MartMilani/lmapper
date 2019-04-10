@@ -21,7 +21,7 @@ void my_distance(py::array_t<double> data, py::array_t<double> dm, int nthreads,
          metric: string that can only assume the following two values: "euclidean" or "correlation"
      */
 
-    // acquiring the Global Interpreter Lock (not sure if it is necessary)
+    // acquiring the Global Interpreter Lock (if not leads to SegmentationFault 11)
     py::gil_scoped_acquire acquire;
 
     py::buffer_info data_info = data.request();
@@ -53,6 +53,7 @@ void my_distance(py::array_t<double> data, py::array_t<double> dm, int nthreads,
 
     // setting the number of threads
     omp_set_num_threads(nthreads);
+    std::cout << "Using "<<nthreads<<" threads"<<std::endl;
 
     if (metric == "correlation"){
         //
@@ -140,7 +141,8 @@ void eccentricity(py::array_t<double> dm, py::array_t<double> ecc, double expone
          exponent: if less than zero, it is interpreted as inf.
          nthreads: number of OpenMP threads to launch.
      */
-    py::gil_scoped_acquire acquire;
+    py::gil_scoped_acquire acquire; // acquiring the Global Interpreter Lock (if not leads to SegmentationFault 11)
+
     py::buffer_info dm_info = dm.request();
     py::buffer_info ecc_info = ecc.request();
 
@@ -149,7 +151,8 @@ void eccentricity(py::array_t<double> dm, py::array_t<double> ecc, double expone
 
     int N = dm_info.shape[0];
     omp_set_num_threads(nthreads);
-
+    std::cout << "Using "<<nthreads<<" threads"<<std::endl;
+    
     #pragma omp parallel
     {
     // these 8 lines spit the job between threads

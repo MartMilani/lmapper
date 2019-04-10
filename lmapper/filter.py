@@ -20,7 +20,7 @@ except ImportError:
                      '“filterutils”.\nThe Python implementation of the eccentricity is '
                      'used instead, but it will be slower.\n')
 
-    def eccentricity(dm, ecc, exp, nthread):
+    def eccentricity(dm, ecc, exp, nthreads):
         """Python implementation of the eccentricity function.
 
         Args:
@@ -107,11 +107,12 @@ class Eccentricity(Filter):
     """Consider the full (N×N)-matrix of pairwise distances. The eccentricity of the
     i-th data point is the Minkowski norm of the i-th row with the respective exponent.
     """
-    def __init__(self, exponent=1., metric='euclidean'):
+    def __init__(self, exponent=1., metric='euclidean', nthreads=4):
         self.exponent = exponent
         self.metric = metric
+        self.nthreads = nthreads
 
-    def __call__(self, data, nthread=4):
+    def __call__(self, data):
         """Just a wrapper of a call to my_distance and a call to eccentricity().
         """
         # defining the parameters
@@ -129,11 +130,11 @@ class Eccentricity(Filter):
 
         # computing eccentricity
         if self.exponent in (np.inf, 'Inf', 'inf'):
-            eccentricity(dm, ecc, -1, nthread)
+            eccentricity(dm, ecc, -1, self.nthreads)
         elif self.exponent == 1.:
-            eccentricity(dm, ecc, 1, nthread)
+            eccentricity(dm, ecc, 1, self.nthreads)
         else:
-            eccentricity(dm, ecc, int(self.exponent), 4)
+            eccentricity(dm, ecc, int(self.exponent), self.nthreads)
         return ecc
 
     def for_assignment_only(self, x, data):
