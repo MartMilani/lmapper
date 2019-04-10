@@ -11,6 +11,15 @@ from lmapper.cover import KeplerCover
 from lmapper.cluster import Linkage
 from lmapper.cutoff import FirstGap
 
+# to avoid the following error:
+#
+# >>> OMP: Error #15: Initializing libiomp5.dylib, but found libiomp5.dylib
+# >>> already initialized
+#
+# we need to add the following two lines:
+import os
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+
 
 def test1(x):
     """Basic usage"""
@@ -66,7 +75,7 @@ def test2(mapper):
     mapper.fit()
 
     # passing a callback
-    def ProjectionOnFirstAxis(data, verbose):
+    def ProjectionOnFirstAxis(data, verbose=True):
         if verbose:
             print("Projecting data on first axis")
         return data[:, 0]

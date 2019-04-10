@@ -9,6 +9,19 @@ namespace py = pybind11;
 // Passing in an array of doubles
 
 void my_distance(py::array_t<double> data, py::array_t<double> dm, int nthreads, std::string metric){
+    /*Computes the distance matrix in squareform format of a data point cloud.
+
+     Args:
+         data: numpy array of doubles.
+         dm: numpy array of doubles already initialized where the distance matrix will be saved.
+            It has to be initialized in the Python code by >>>> dm = np.ndarray((N,N), dtype='float')
+            This means that this function does not return the result, but modifies the content
+            of the numpy array dm.
+         nthreads: number of OpenMP threads to launch
+         metric: string that can only assume the following two values: "euclidean" or "correlation"
+     */
+
+    // acquiring the Global Interpreter Lock (not sure if it is necessary)
     py::gil_scoped_acquire acquire;
 
     py::buffer_info data_info = data.request();
@@ -118,9 +131,16 @@ void my_distance(py::array_t<double> data, py::array_t<double> dm, int nthreads,
 
 }
 
-void eccentricity(py::array_t<double> dm, py::array_t<double> ecc, int exponent, int nthreads) {
-    py::gil_scoped_acquire acquire;
+void eccentricity(py::array_t<double> dm, py::array_t<double> ecc, double exponent, int nthreads) {
+    /*Computes the ecentricity of a data point cloud.
 
+     Args:
+         dm: squared form distance matrix NOTE: optimization possible: it could accept a compressed flat distance matrix
+         ecc: numpy array already initialized where to store the result. This means that it has to be initialized in the Python code with >>>> ecc = numpy.zeros((N,1), dtype='float')
+         exponent: if less than zero, it is interpreted as inf.
+         nthreads: number of OpenMP threads to launch.
+     */
+    py::gil_scoped_acquire acquire;
     py::buffer_info dm_info = dm.request();
     py::buffer_info ecc_info = ecc.request();
 
@@ -143,7 +163,7 @@ void eccentricity(py::array_t<double> dm, py::array_t<double> ecc, int exponent,
         end = N;
 
     // implementation of the eccentricity in case exponent==-1
-    if (exponent == -1){
+    if (exponent < 0){
         for (int i = start; i <end; i++)
             for (int j = 0; j<N; j++){
                 double el = dm_ptr[i*N+j];
