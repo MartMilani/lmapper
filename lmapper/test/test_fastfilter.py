@@ -22,8 +22,6 @@ def test2(data, nthreads):
 
 if __name__ == '__main__':
 
-    p = ff.Filter.factory("daffgasd")
-    print(p)
     np.random.seed(seed=0)
     data = np.random.multivariate_normal([0, 0], [[1, 0], [0, 1]], size=10000)
 
