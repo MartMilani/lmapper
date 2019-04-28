@@ -1,4 +1,4 @@
-import lmapper.fastfilter as ff
+import filterutils as ff
 import numpy as np
 import time
 from lmapper.filter import Eccentricity

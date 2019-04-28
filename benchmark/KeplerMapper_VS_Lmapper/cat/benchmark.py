@@ -3,16 +3,15 @@ martino.milani94@gmail.com
 
 Test routine for the lmapper module
 """
-import numpy as np
 import kmapper as km
 import sklearn
 import time
 import lmapper as lm
-from lmapper.filter import Eccentricity, Projection
-from lmapper.cover import KeplerCover, BalancedCover
+from lmapper.filter import Projection
+from lmapper.cover import KeplerCover
 from lmapper.cluster import Linkage
-import predmap as mapp
 from lmapper.cutoff import FirstGap
+from lmapper.datasets import importer_cat
 
 
 def test(x):
@@ -35,7 +34,7 @@ def test(x):
     start = time.time()
     mapper = km.KeplerMapper(verbose=2)
     projected_data = mapper.fit_transform(x, projection=[0])
-    graph = mapper.map(
+    mapper.map(
         projected_data,
         x,
         nr_cubes=25,
@@ -48,10 +47,7 @@ def test(x):
 
 
 def main():
-    import gzip
-    filename = '../../../lmapper/lmapper/datasets/cat-reference.csv.gz'
-    with gzip.open(filename, 'r') as inputfile:
-        x = np.loadtxt(inputfile, delimiter=',', dtype=np.float)
+    x = importer_cat()
     test(x)
     return 0
 
