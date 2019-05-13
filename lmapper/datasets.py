@@ -3,14 +3,14 @@ import gzip
 import pandas as pd
 
 
-def importer_cat():
+def cat():
     filename = '../datasets/cat-reference.csv.gz'
     with gzip.open(filename, 'r') as inputfile:
         cat = np.loadtxt(inputfile, delimiter=',', dtype=np.float)
     return cat
 
 
-def importer_wisconsin():
+def wisconsin_breast_cancer():
     data = pd.read_csv('../datasets/wisconsinbreastcancer.csv')
     x = data[data.columns[2:-1]].values
     y = data[data.columns[1]].values
@@ -18,7 +18,7 @@ def importer_wisconsin():
     return x, y_
 
 
-def importer_synthetic():
+def synthetic_dataset():
     from numpy import genfromtxt
     x = genfromtxt('../datasets/synthetic.csv',
                    delimiter=',')

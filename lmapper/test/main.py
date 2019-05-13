@@ -1,19 +1,15 @@
-import pdb
-import sys
-sys.path.append(
-    '/Users/martinomilani/Documents/III_semester/PACS/project/shapegraph')
-sys.path.append(
-    '/Users/martinomilani/Documents/III_semester/PACS/project/predictive_shapegraph')
-from cutoff import FirstGap
-import mapperpredictor as mapp
-from cluster import Linkage
-from cover import UniformCover, BalancedCover
-from filter import Eccentricity, Projection
-import shapegraph as sg
-import numpy as np
 import matplotlib
 matplotlib.use('tkAgg')
 import matplotlib.pyplot as plt
+
+from lmapper.cutoff import FirstGap
+import predmap as mapp
+from lmapper.cluster import Linkage
+from lmapper.cover import UniformCover
+from lmapper.filter import Projection
+import lmapper as lm
+import numpy as np
+
 
 
 x = [0, 0, 0, 0, 0, 10, 10, 10, 20, 20, 30, 30, 30, 40, 40, 50, 50, 50, 60, 60]
@@ -29,11 +25,11 @@ cover = UniformCover(nintervals=4,
 cluster = Linkage(method='single',
                   metric='euclidean',
                   cutoff=FirstGap(0.1))
-shapegraph = sg.ShapeGraph(data=data,
-                           filter=filter,
-                           cover=cover,
-                           cluster=cluster)
-shapegraph.fit().plot(_pos='attribute')
-for fiber in shapegraph.cover:
+mapper = lm.Mapper(data=data,
+                   filter=filter,
+                   cover=cover,
+                   cluster=cluster)
+mapper.fit().plot()
+for fiber in mapper.cover:
     print(len(fiber._nodes))
     print(fiber._clusterinfo)

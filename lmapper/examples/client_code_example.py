@@ -10,7 +10,7 @@ from lmapper.filter import Eccentricity
 from lmapper.cover import KeplerCover
 from lmapper.cluster import Linkage
 from lmapper.cutoff import FirstGap
-
+from lmapper.datasets import cat
 # to avoid the following error:
 #
 # >>> OMP: Error #15: Initializing libiomp5.dylib, but found libiomp5.dylib
@@ -84,11 +84,7 @@ def test2(mapper):
 
 
 def main():
-    import gzip
-    import numpy as np
-    filename = '../datasets/cat-reference.csv.gz'
-    with gzip.open(filename, 'r') as inputfile:
-        x = np.loadtxt(inputfile, delimiter=',', dtype=np.float)
+    x = cat()
     print(x.shape)
     m = test1(x)
     test2(m)
