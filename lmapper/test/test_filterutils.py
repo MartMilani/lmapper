@@ -23,7 +23,7 @@ if __name__ == '__main__':
     os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
     np.random.seed(seed=0)
-    N = 10000
+    N = 1000
     data = np.random.multivariate_normal([0, 0], [[1, 0], [0, 1]], size=N)
 
     start = time.time()
