@@ -2,12 +2,10 @@
 //  Eccentricity.cpp
 //  
 //
-//  Created by Martino Milani on 26.05.19.
+//  Created by Martino Milani
 //
 
 #include "Eccentricity.hpp"
-
-
 
 py::array_t<double> Eccentricity::operator()(py::array_t<double>& data){
     // releasing the GIL before a CPU-bound code that

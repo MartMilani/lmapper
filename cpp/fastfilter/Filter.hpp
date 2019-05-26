@@ -12,6 +12,8 @@
 #include <pybind11/numpy.h>
 #include <iostream>
 
+namespace py = pybind11;
+
 class Filter{
     // Abstract base class from which all filters have to inherit to obey the API.
     // Furthermore, it implements a simple static method as factory, in order to be easily

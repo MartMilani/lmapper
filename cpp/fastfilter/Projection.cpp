@@ -2,10 +2,10 @@
 //  Projection.cpp
 //  
 //
-//  Created by Martino Milani on 26.05.19.
+//  Created by Martino Milani
 //
 
-#include <stdio.h>
+#include "Projection.hpp"
 
 
 py::array_t<double> Projection::operator() (py::array_t<double>& data){

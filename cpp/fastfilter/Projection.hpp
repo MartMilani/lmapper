@@ -2,16 +2,18 @@
 //  Projection.hpp
 //  
 //
-//  Created by Martino Milani on 26.05.19.
+//  Created by Martino Milani
 //
 
 #ifndef Projection_h
 #define Projection_h
 
-#include "fastfilter.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <iostream>
+#include "Filter.hpp"
+
+namespace py = pybind11;
 
 class Projection: public Filter{
     // Filter implementing the projection on one axis

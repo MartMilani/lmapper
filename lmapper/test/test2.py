@@ -21,13 +21,11 @@ def main():
                        cluster=cluster)
     mapper.fit()
     mapper.plot()
-
-	cluster = Linkage(method='single',
-					  metric="euclidean",
+    cluster = Linkage(method='single', metric="euclidean",
                       cutoff=cutoff)
-	mapper.set_params(cluster=cluster)
-	mapper.fit()
-	mapper.plot()
+    mapper.set_params(cluster=cluster)
+    mapper.fit()
+    mapper.plot()
 
 
 if __name__ == "__main__":

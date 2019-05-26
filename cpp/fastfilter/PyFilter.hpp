@@ -2,7 +2,7 @@
 //  PyFilter.hpp
 //  
 //
-//  Created by Martino Milani on 26.05.19.
+//  Created by Martino Milani
 //
 #ifndef PyFilter_h
 #define PyFilter_h
@@ -11,6 +11,8 @@
 #include <pybind11/numpy.h>
 #include <iostream>
 #include "Filter.hpp"
+
+namespace py = pybind11;
 
 class PyFilter : public Filter {
     // Filter is not constructible, and we clearly (?) require some kind of “trampoline”

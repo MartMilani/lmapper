@@ -2,7 +2,7 @@
 //  wrap.cpp
 //  
 //
-//  Created by Martino Milani on 26.05.19.
+//  Created by Martino Milani
 //
 
 #include <pybind11/pybind11.h>

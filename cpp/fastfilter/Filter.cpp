@@ -2,10 +2,9 @@
 //  Filter.cpp
 //  
 //
-//  Created by Martino Milani on 26.05.19.
+//  Created by Martino Milani
 //
 
-#include <stdio.h>
 #include "Filter.hpp"
 
 
