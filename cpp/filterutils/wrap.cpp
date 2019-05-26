@@ -1,11 +1,10 @@
-#include <cmath>
-#include <omp.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <iostream>
-#include <algorithm>
 namespace py = pybind11;
 #include "filterutils.hpp"
+
+
 // binding code
 PYBIND11_MODULE(filterutils, m) {
     m.doc() = "auto-compiled c++ extension";

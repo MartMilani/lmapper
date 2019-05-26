@@ -9,7 +9,7 @@ Example:
     >>> mapper = lm.Mapper(data=x,
     >>>                    filter='Projection',
     >>>                    cluster='Linkage',
-    >>>                    cover='BalancedCover)
+    >>>                    cover='BalancedCover')
     >>> mapper.fit()
     >>> mapper.plot()
 
@@ -19,9 +19,9 @@ How to install on Mac OS High Sierra 10.13.6
 
 The filterutils package uses OpenMP: to install it, run
 
-$ brew install openmp
+$ brew install libomp
 
-This installation procedure is meant to be used as indicated in https://iscinumpy.gitlab.io/post/omp-on-high-sierra/
+This should be enough. In case of problems, refer to the installation procedure in https://iscinumpy.gitlab.io/post/omp-on-high-sierra/
 
 Once installed openmp as above, run the command
 
@@ -36,7 +36,7 @@ Check your installation
 
 Run the following tests:
 
-$ python lmapper/test/test_filterutils.py
-$ python lmapper/test/test1.py
+$ python <path-to-this-folder>/lmapper/test/test_filterutils.py
+$ python <path-to-this-folder>/lmapper/test/test1.py
 
 If no exeption is raised, the installation should be successful
